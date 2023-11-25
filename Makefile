@@ -10,10 +10,13 @@ all: clean coforth.img
 coforth.img: coforth.elf
 	$(OBJCOPY) coforth.elf -I binary coforth.img
 
-coforth.elf: coforth.o link.ld Makefile
-	$(LD) -T link.ld --no-warn-rwx-segments -o coforth.elf coforth.o
+coforth.elf: coforth.o uart0.o link.ld Makefile
+	$(LD) -T link.ld --no-warn-rwx-segments -o coforth.elf coforth.o uart0.o
 
 coforth.o: coforth.s
+	$(CC) $(FLAGS) -c $< -o $@
+
+uart0.o: uart0.s
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
