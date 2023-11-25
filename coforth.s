@@ -17,7 +17,7 @@
 _start: 
   la    a0, hello               # print welcome message
   call  print_cstr
-  li    sp, 0x3242
+  li    sp, 0x88000000
 1:                              # ECHO LOOP:
   mv    a0, sp
   call  print_word
@@ -63,17 +63,19 @@ getchar:                        # getchar: get a single char from UART0.
   ret
 
 key:                            # key: blocking version of getchar. spin until we get a character
-                                # TODO is stack usage broken?
-  mv    t2, ra                  # store ra in t2 for now, we know getchar won't clobber it
+  addi  sp, sp, -4              # alloc stack space for ra
+  sw    ra, 0(sp)               # store ra
 1:                              # LOOP:
   call  getchar                 # returns char in a0
   beqz  a0, 1b                  # loop back if we didn't get a character
-  mv    ra, t2                  # restore return address
+  lw    ra, 0(sp)               # restore ra from stack
+  addi  sp, sp, 4               # dealloc stack
   ret                           # RET: a0 holds the char
 
 
 print_word:                     # print_word: prints word in a0 in hex
-  mv    t4, ra                  # TODO: fix this horrible hack to work around the stack not working. putchar won't clobber t4
+  addi  sp, sp, -4              # alloc stack space for ra
+  sw    ra, 0(sp)               # store ra
   mv    t0, a0                  # t0 <- ! original argument
   li    t1, 0xF0000000
   la    t2, hextbl              # t2 <- 0 hex table
@@ -90,7 +92,8 @@ print_word:                     # print_word: prints word in a0 in hex
   mv    a0, t0                  # restore original number
   j     1b
 2:                              # RET:
-  mv    ra, t4                  # restore the stack
+  lw    ra, 0(sp)               # restore ra from stack
+  addi  sp, sp, 4               # dealloc stack
   ret
 
   
