@@ -11,7 +11,7 @@
 # outer interpreter
 .global _start	
 _start: 
-  li    sp, 0x88000000          # initialize sp, NOTE: specific to qemu virt machine
+  la    sp, __stack_start       # initialize sp, NOTE: specific to qemu virt machine
   la    a0, hello               # print welcome message
   call  print_cstr
 1:                              # ECHO LOOP:

@@ -5,13 +5,11 @@
 .global getchar
 .global key
 
-# uart registers
-.equ UART0, 0x10000000
 
 # output procedures
 print_cstr:                     # print_cstr: print a null terminated string to UART0
                                 # a0 := ! cstr address, used as char ptr
-  li    t0, UART0               # t0 := 0 UART output addr
+  la    t0, __uart0             # t0 := 0 UART output addr
 1:                              # LOOP:
   lb    t1, 0(a0)               # t1 := ! current char
   beq   t1, zero, 2f            # return if we see null char
@@ -23,14 +21,14 @@ print_cstr:                     # print_cstr: print a null terminated string to 
 
 putchar:                        # putchar: output a char to UART0
                                 # a0 := 0 char to output to UART
-  li    t0, UART0               # t0 := 0 UART output addr
+  la    t0, __uart0             # t0 := 0 UART output addr
   sb    a0, 0(t0)               # write low byte of t0 to UART
   ret
 
 getchar:                        # getchar: get a single char from UART0.
                                 # returns 0 if there's no char available
                                 # TODO: replace magic numbers with constants
-  li    t0, UART0               # to := 0 UART addr
+  la    t0, __uart0             # to := 0 UART addr
   lbu   t1, 0x5(t0)             # t1 := ! line status
   andi  t1, t1, 0x1             # lowest bit indicates if char is available
   addi  a0, zero, 0             # store 0 in return register
