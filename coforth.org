@@ -1,0 +1,13 @@
+
+#+TITLE: coffee forth
+#+AUTHOR: Peter Stapleton
+* notes
+This is all a WIP, everything will change.
+* register allocation
+| riscv name | coforth alias | description |
+|------------+---------------+-------------|
+|            |               |             |
+
+* threading model
+* IO
+* supported sords
