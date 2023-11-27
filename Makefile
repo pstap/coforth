@@ -13,7 +13,7 @@ coforth.img: coforth.elf
 coforth.elf: coforth.o uart0.o link.ld Makefile
 	$(LD) -T link.ld --no-warn-rwx-segments -o coforth.elf coforth.o uart0.o
 
-coforth.o: coforth.s
+coforth.o: coforth.S
 	$(CC) $(FLAGS) -c $< -o $@
 
 uart0.o: uart0.s
