@@ -4,6 +4,7 @@
 .global putchar
 .global getchar
 .global key
+.global print_word
 
 
 # output procedures
