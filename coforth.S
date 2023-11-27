@@ -17,7 +17,25 @@
 # this register stores the top of the return stack
 #define RS s11
 
-.section .bss
+.section .text
+
+
+# outer interpreter
+.global _start	
+_start: 
+  la    sp, __stack_start       # initialize sp, NOTE: specific to qemu virt machine
+  la    a0, hello               # print welcome message
+  call  print_cstr
+1:                              # ECHO LOOP:
+  call  key
+  call  putchar
+  la    a0, nl
+  call  print_cstr
+  j     1b
+
+forever:
+  wfi
+  j     forever
 
 # TODO: direct threaded with shared NEXT
 # NOTE: shared NEXT is bad for the branch predictor
@@ -45,24 +63,6 @@ dup:                            # (x -- x x)
   sw    TOS, 0(DS)              # store value to top of data stack (PUSH)
   add   TOS, TOS, t0            # add loaded word to t0
   j     NEXT                    # go to next instruction
-  
-
-# outer interpreter
-.global _start	
-_start: 
-  la    sp, __stack_start       # initialize sp, NOTE: specific to qemu virt machine
-  la    a0, hello               # print welcome message
-  call  print_cstr
-1:                              # ECHO LOOP:
-  call  key
-  call  putchar
-  la    a0, nl
-  call  print_cstr
-  j     1b
-
-forever:
-  wfi
-  j     forever
 
 
 .section .data
